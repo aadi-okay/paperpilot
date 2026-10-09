@@ -204,9 +204,17 @@ with st.sidebar:
 
 def get_client():
     api_key = os.getenv("OPENROUTER_API_KEY")
+
+    if not api_key:
+        try:
+            api_key = st.secrets["OPENROUTER_API_KEY"]
+        except (KeyError, FileNotFoundError):
+            api_key = None
+
     if not api_key:
         raise RuntimeError(
-            "API key not found. Check your .env file."
+            "API key not found. Configure OPENROUTER_API_KEY "
+            "in your .env file or Streamlit Cloud Secrets."
         )
 
     return OpenAI(
